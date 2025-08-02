@@ -117,7 +117,7 @@ elif tool == "Hashtag & Description Generator":
             )
             with st.spinner("Generating..."):
                 try:
-                    result = generate_hashtags_and_description(prompt_hd, api_key=API_KEY)
+                    result = generate_hashtags_and_description(prompt_hd)
                     if "\n\n" in result:
                         desc_part, hash_part = result.strip().split("\n\n", 1)
                     else:
