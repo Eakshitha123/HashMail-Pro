@@ -47,7 +47,7 @@ if tool == "Email Generator":
             prompt = build_prompt(topic, email_type, tone)
             with st.spinner("Generating email..."):
                 try:
-                    email = generate_email(prompt)  # Your function that uses API_KEY internally
+                    email = generate_email(prompt)
                     st.session_state.generated_email = email
                     st.success("Email generated successfully!")
                 except Exception as e:
@@ -81,8 +81,7 @@ if tool == "Email Generator":
             if use_custom_sender:
                 result = send_email_custom(custom_sender_email, custom_app_password, recipient, subject, email)
             else:
-                # Correct call with 3 args only
-                result = send_email(recipient, subject, email)
+                result = send_email(custom_sender_email, custom_app_password, recipient, subject, email)
 
             if result is True:
                 st.success("Email sent successfully!")
