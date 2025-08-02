@@ -81,8 +81,7 @@ if tool == "Email Generator":
             if use_custom_sender:
                 result = send_email_custom(custom_sender_email, custom_app_password, recipient, subject, email)
             else:
-                result = send_email(custom_sender_email, custom_app_password, recipient, subject, email)
-
+                result = send_email(recipient, subject, email)     
             if result is True:
                 st.success("Email sent successfully!")
             else:
