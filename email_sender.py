@@ -1,16 +1,13 @@
 import smtplib
-import os
-from dotenv import load_dotenv
+import streamlit as st
 
-# Load environment variables from .env file
-load_dotenv()
-
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
-SENDER_PASSWORD = os.getenv("EMAIL_PASSWORD")
+# Load from st.secrets
+SENDER_EMAIL = st.secrets["SENDER_EMAIL"]
+SENDER_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 
 def send_email(recipient, subject, body):
     if not SENDER_EMAIL or not SENDER_PASSWORD:
-        return "Sender email or password not set in environment variables."
+        return "Sender email or password not set in Streamlit secrets."
 
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:

@@ -1,19 +1,13 @@
-import os
-from dotenv import load_dotenv
 import streamlit as st
 from groq_api import generate_email, generate_hashtags_and_description
 from email_sender import send_email, send_email_custom
 
-# Load .env file
-load_dotenv()
-
-# Access your secrets via environment variables
-API_KEY = os.getenv("API_KEY")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
-SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+# Get secrets from Streamlit Cloud
+API_KEY = st.secrets["API_KEY"]
+EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
+SENDER_EMAIL = st.secrets["SENDER_EMAIL"]
 
 st.set_page_config(page_title="Marketing Tools", layout="centered")
-
 st.title("📧 Marketing / Collaboration Email Generator & Hashtag Tool")
 
 # ------------------------- TOOL SELECTION -------------------------
@@ -53,8 +47,7 @@ if tool == "Email Generator":
             prompt = build_prompt(topic, email_type, tone)
             with st.spinner("Generating email..."):
                 try:
-                    # Pass API_KEY if needed inside generate_email()
-                    email = generate_email(prompt, api_key=API_KEY)  # Update your groq_api function to accept this param
+                    email = generate_email(prompt, api_key=API_KEY)
                     st.session_state.generated_email = email
                     st.success("Email generated successfully!")
                 except Exception as e:
@@ -65,7 +58,6 @@ if tool == "Email Generator":
                          height=300)
 
     st.subheader("📤 Send Generated Email")
-
     recipient = st.text_input("Recipient Email Address")
 
     use_custom_sender = st.checkbox("Use different sender email (optional)")
@@ -74,7 +66,6 @@ if tool == "Email Generator":
         custom_sender_email = st.text_input("Your Email (Gmail only)")
         custom_app_password = st.text_input("App Password", type="password")
     else:
-        # Use environment variables if no custom sender
         custom_sender_email = SENDER_EMAIL
         custom_app_password = EMAIL_PASSWORD
 
@@ -90,7 +81,6 @@ if tool == "Email Generator":
             if use_custom_sender:
                 result = send_email_custom(custom_sender_email, custom_app_password, recipient, subject, email)
             else:
-                # Use sender credentials from env
                 result = send_email(custom_sender_email, custom_app_password, recipient, subject, email)
 
             if result is True:
@@ -127,7 +117,7 @@ elif tool == "Hashtag & Description Generator":
             )
             with st.spinner("Generating..."):
                 try:
-                    result = generate_hashtags_and_description(prompt_hd, api_key=API_KEY)  # pass API_KEY if needed
+                    result = generate_hashtags_and_description(prompt_hd, api_key=API_KEY)
                     if "\n\n" in result:
                         desc_part, hash_part = result.strip().split("\n\n", 1)
                     else:
@@ -150,7 +140,4 @@ if st.session_state.get("description") or st.session_state.get("hashtags"):
 
 # ---------------------------- FOOTER ----------------------------
 st.markdown("---")
-st.markdown(
-    "<center>Made with ❤️ by Team SEM | www.sem.com</center>",
-    unsafe_allow_html=True
-)
+st.markdown("<center>Made with ❤️ by Team SEM | www.sem.com</center>", unsafe_allow_html=True)

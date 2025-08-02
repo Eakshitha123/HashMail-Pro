@@ -1,16 +1,8 @@
-# groq_api.py
-import os
 import requests
-from dotenv import load_dotenv
-
-# Load env variables from .env
-load_dotenv()
+import streamlit as st
 
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_API_KEY = os.getenv("API_KEY")  # Load API key from environment variable
-
-if not GROQ_API_KEY:
-    raise Exception("GROQ_API_KEY not found in environment variables")
+GROQ_API_KEY = st.secrets["API_KEY"]  # Securely loaded from Streamlit secrets
 
 headers = {
     "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -39,7 +31,9 @@ def generate_hashtags_and_description(prompt: str) -> str:
         "temperature": 0.7,
         "max_tokens": 512
     }
+
     response = requests.post(API_URL, headers=headers, json=data)
+
     if response.status_code == 200:
         return response.json()["choices"][0]["message"]["content"].strip()
     else:
