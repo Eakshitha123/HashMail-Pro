@@ -47,7 +47,7 @@ if tool == "Email Generator":
             prompt = build_prompt(topic, email_type, tone)
             with st.spinner("Generating email..."):
                 try:
-                    email = generate_email(prompt, api_key=API_KEY)
+                    email = generate_email(prompt)
                     st.session_state.generated_email = email
                     st.success("Email generated successfully!")
                 except Exception as e:
